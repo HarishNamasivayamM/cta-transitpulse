@@ -4,6 +4,8 @@ End-to-end Chicago Transit Authority bus analytics built with Python, SQL, Panda
 
 TransitPulse turns vehicle-location and arrival-prediction records into route-level KPIs, reliability trends, operating-period comparisons, activity heatmaps, geographic exploration, and downloadable route summaries.
 
+**Live dashboard:** [cta-transitpulse.streamlit.app](https://cta-transitpulse-m2nssudw6zppycqfwjega2.streamlit.app/)
+
 ## Project snapshot
 
 | | What it delivers |
@@ -15,6 +17,12 @@ TransitPulse turns vehicle-location and arrival-prediction records into route-le
 | Product | Interactive Streamlit dashboard with route, time-window, KPI, heatmap, map, and CSV export views. |
 
 > The no-key demo dataset is deterministic synthetic data shaped around CTA bus operating patterns. Live CTA API mode is optional and documented below.
+
+## Live demo
+
+The hosted Streamlit dashboard starts with a reproducible seven-day demo dataset, so no API key is required to explore the project.
+
+[Open CTA TransitPulse](https://cta-transitpulse-m2nssudw6zppycqfwjega2.streamlit.app/)
 
 ## Dashboard
 
@@ -177,4 +185,3 @@ cta-analytics/
 ## License
 
 MIT. See [`LICENSE`](LICENSE).
-

@@ -56,7 +56,17 @@ def query(sql: str, params: tuple = ()) -> pd.DataFrame:
 def ensure_database() -> bool:
     """Create the demo database automatically on a fresh cloud deployment."""
     if DB_PATH.exists():
-        return True
+        try:
+            with get_connection() as connection:
+                vehicle_count = connection.execute(
+                    "SELECT COUNT(*) FROM vehicles_processed"
+                ).fetchone()[0]
+            if vehicle_count > 0:
+                return True
+        except sqlite3.Error:
+            # A blank or partially-created database can exist after a restart.
+            # Rebuild it below so the hosted demo is self-healing.
+            pass
 
     try:
         from ingestion import CTAIngestion
@@ -69,6 +79,8 @@ def ensure_database() -> bool:
                 processed_dir=DB_PATH.parent / "processed",
             )
             try:
+                if DB_PATH.exists():
+                    ingestion.reset_database()
                 ingestion.generate_sample_data(days=7)
             finally:
                 ingestion.close()

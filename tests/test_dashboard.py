@@ -32,3 +32,14 @@ def test_dashboard_smoke(tmp_path: Path, monkeypatch) -> None:
     assert len(app.metric) == 5
     assert len(app.dataframe) == 1
 
+
+def test_dashboard_bootstraps_missing_database(tmp_path: Path, monkeypatch) -> None:
+    db_path = tmp_path / "fresh_deployment.db"
+    monkeypatch.setenv("CTA_DB_PATH", str(db_path))
+
+    app = AppTest.from_file("src/dashboard.py", default_timeout=60)
+    app.run()
+
+    assert not app.exception
+    assert db_path.exists()
+    assert len(app.metric) == 5

@@ -53,6 +53,37 @@ def query(sql: str, params: tuple = ()) -> pd.DataFrame:
         return pd.read_sql_query(sql, connection, params=params)
 
 
+def ensure_database() -> bool:
+    """Create the demo database automatically on a fresh cloud deployment."""
+    if DB_PATH.exists():
+        return True
+
+    try:
+        from ingestion import CTAIngestion
+        from processing import CTAProcessor
+
+        with st.spinner("Creating the demo dataset for this deployment…"):
+            ingestion = CTAIngestion(
+                db_path=DB_PATH,
+                raw_dir=DB_PATH.parent / "raw",
+                processed_dir=DB_PATH.parent / "processed",
+            )
+            try:
+                ingestion.generate_sample_data(days=7)
+            finally:
+                ingestion.close()
+
+            processor = CTAProcessor(db_path=DB_PATH)
+            try:
+                processor.run()
+            finally:
+                processor.close()
+        return True
+    except Exception as exc:
+        st.error(f"Demo dataset creation failed: {exc}")
+        return False
+
+
 def ensure_processed() -> bool:
     """Build processed tables automatically when raw data is present."""
     try:
@@ -108,11 +139,7 @@ def chart_layout(fig: go.Figure, height: int = 320) -> go.Figure:
     return fig
 
 
-if not DB_PATH.exists():
-    st.error(
-        "No SQLite database found. Run the end-to-end demo pipeline first:\n\n"
-        "```bash\npython -m src.pipeline --sample --days 7 --reset\n```"
-    )
+if not ensure_database():
     st.stop()
 
 if not ensure_processed():

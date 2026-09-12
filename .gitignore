@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Secrets and local configuration
+.env
+.streamlit/secrets.toml
+
+# Generated logs and notebook state
+*.log
+.ipynb_checkpoints/
+
+# Generated data: keep only directory placeholders in Git
+data/*.db
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+!data/processed/dashboard_screenshot.png
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+
